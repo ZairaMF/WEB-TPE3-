@@ -6,9 +6,11 @@ require_once './app/controller/viaje.controller.php';
 $router = new Router();
 
 #                 endopint   verbo      controller          metodo
-$router->addRoute('viaje',    'GET', 'viajeApiController', 'getAll');
-$router->addRoute('viaje/:id', 'GET', 'viajeApiController', 'get');
+$router->addRoute('viajes',    'GET', 'viajeApiController', 'getAll');
+$router->addRoute('viajes/:id', 'GET', 'viajeApiController', 'get');
+$router->addRoute('viajes/:id', 'DELETE', 'viajeApiController', 'delete');
+$router->addRoute('viajes', 'POST', 'viajeApiController', 'create');
+$router->addRoute('viajes/:id', 'PUT', 'viajeApiController', 'update');
 
-#               tareas/12
 $router->route($_GET['resource'],$_SERVER ['REQUEST_METHOD']);
 ?>
