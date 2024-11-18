@@ -47,29 +47,24 @@
 
    //api/viajes (POST)
    public function create($req, $res){
-    // Verifica si los campos requeridos están presentes
-    if(empty( $req->body->Fecha) || empty($req->body->Hora) || 
-       empty($req->body->Origen) || empty($req->body->Destino) || 
-       empty($req->body->id)) {
-        return $this->view->response("Falta completar los campos", 400);
-    }
+    if (empty($req->body['Fecha']) || empty($req->body['Hora']) || 
+    empty($req->body['Origen']) || empty($req->body['Destino']) || 
+    empty($req->body['id'])) {
+    return $this->view->response("Falta completar los campos", 400);
+}
 
-    $fecha = $req->body->Fecha;
-    $hora = $req->body->Hora;
-    $origen = $req->body->Origen;
-    $destino = $req->body->Destino;
-    $ID_categoria = $req->body->id;  
-
-    // Verificar que la categoría si existe antes de insertar el viaje
-      $categoria = $this->model->verCategoriaById($ID_categoria);
-      if (!$categoria) {
-          return $this->view->response("La categoría con el id=$ID_categoria no existe", 404);
-      }
+    // Acceso correcto a los campos
+    $fecha = $req->body['Fecha'];
+    $hora = $req->body['Hora'];
+    $origen = $req->body['Origen'];
+    $destino = $req->body['Destino'];
+    $ID_categoria = $req->body['id'];  
+    
     // Llamar al modelo para agregar el nuevo viaje
    $ID_viaje =  $this->model->agregarViaje($fecha, $hora, $origen, $destino, $ID_categoria);
 
     // Responder con un mensaje de éxito
-     if(!$ID_viaje){
+     if($ID_viaje){
       return $this->view->response("El viaje fue creado con éxito con id=$ID_viaje", 201);
      }else{
       return $this->view->response("Error al crear el viaje=$ID_viaje", 500);
@@ -79,13 +74,32 @@
 //api/viajes/:id (PUT)
   public function update($req,$res){
    $ID_viaje = $req->params->id;
-
+   
+     //verifico que existas
      $viaje = $this->model->getViaje();
-
      if(!$viaje){
       return $this->view->response("El viaje con el id= $ID_viaje no existe" , 404);
      }
-
+     //valido
+     if (empty($req->body['Fecha']) || empty($req->body['Hora']) || 
+     empty($req->body['Origen']) || empty($req->body['Destino']) || 
+     empty($req->body['id'])) {
+     return $this->view->response("Falta completar los campos", 400);
+ }
+ 
+     // Acceso correcto a los campos
+     $fecha = $req->body['Fecha'];
+     $hora = $req->body['Hora'];
+     $origen = $req->body['Origen'];
+     $destino = $req->body['Destino'];
+     $ID_categoria = $req->body['id']; 
+     
+     //actualizo 
+     $this->model->editarViaje($fecha, $hora, $origen, $destino, $ID_categoria, $ID_viaje);
+   
+     //obtengo viaje modificado y lo devuelvo
+     $viaje = $this->model->getViajeById($ID_viaje);
+     $this->view->response($viaje, 200);
        
   }
     
