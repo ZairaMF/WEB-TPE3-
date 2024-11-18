@@ -63,6 +63,18 @@ class categoriaApiController{
           if(!$categoria){
            return $this->view->response("La categoria con el id= $ID_categoria no existe" , 404);
           }
+
+          if(empty($req->body['temporada']) || empty($req->body['empresa']) || empty($req->body['comodidad'])){
+            return $this->view->response("Falta completar los campos", 400);
+        }
+
+        $temporada = $req->body['temporada'];
+        $empresa = $req->body['empresa'];
+        $comodidad = $req->body['comodidad'];
+
+        $this->model->editarCategoria($ID_categoria, $temporada, $empresa, $comodidad);
+         $categoria = $this->model->getViajesByCategoriaId($ID_categoria);
+         $this->view->response($categoria, 200);
        }
 }
 ?>
